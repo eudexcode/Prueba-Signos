@@ -1,0 +1,25 @@
+# Node.js
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+package-lock.json
+
+# Docker
+*.pid
+*.log
+docker-compose.override.yml
+
+# SQL Server / scripts de DB
+*.mdf
+*.ldf
+mssql_data/
+
+# Archivos generados por herramientas o IDEs
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Peticiones de prueba
+request.http

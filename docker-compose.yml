@@ -1,0 +1,52 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
+    environment:
+      SA_PASSWORD: "Str0ng_P4ssw0rd!"
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Developer"
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql
+    networks:
+      - backend-network
+
+  sqlinit:
+    image: mcr.microsoft.com/mssql-tools
+    depends_on:
+      - sqlserver
+    entrypoint: >
+      /bin/sh -c "
+        sleep 20;
+        /opt/mssql-tools/bin/sqlcmd -S sqlserver -U sa -P 'Str0ng_P4ssw0rd!' -i /init.sql;
+      "
+    volumes:
+      - ./init.sql:/init.sql
+    networks:
+      - backend-network
+
+      
+  backend:
+    build: .
+    container_name: backend
+    depends_on:
+      - sqlserver
+    environment:
+      DB_USER: sa
+      DB_PASSWORD: Str0ng_P4ssw0rd!
+      DB_SERVER: sqlserver
+      DB_DATABASE: Productos
+    ports:
+      - "3000:3000"
+    networks:
+      - backend-network
+
+
+volumes:
+  mssql_data:
+
+networks:
+  backend-network:
+    driver: bridge
